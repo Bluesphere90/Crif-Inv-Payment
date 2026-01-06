@@ -3,6 +3,7 @@ import { AppDataSource } from '../config/database';
 import { User } from '../entities/User';
 import { SaleTeam } from '../entities/SaleTeam';
 import { UserRole } from '../types/enums';
+import bcrypt from 'bcrypt';
 
 async function runSeeds() {
     try {
@@ -32,6 +33,9 @@ async function runSeeds() {
         await teamRepository.save(team2);
         console.log('✅ Created Team Beta');
 
+        // Helper to hash password
+        const hash = async (pwd: string) => bcrypt.hash(pwd, 10);
+
         // Create admin user
         console.log('\nCreating admin user...');
 
@@ -44,7 +48,7 @@ async function runSeeds() {
         } else {
             const admin = userRepository.create({
                 email: 'admin@company.com',
-                tempPassword: 'Admin@123',
+                passwordHash: await hash('Admin@123'),
                 role: UserRole.ADMIN,
                 isActive: true,
             });
@@ -67,7 +71,7 @@ async function runSeeds() {
         } else {
             const accounting = userRepository.create({
                 email: 'accounting@company.com',
-                tempPassword: 'Accounting@123',
+                passwordHash: await hash('Accounting@123'),
                 role: UserRole.ACCOUNTING,
                 isActive: true,
             });
@@ -89,7 +93,7 @@ async function runSeeds() {
         } else {
             const leader = userRepository.create({
                 email: 'leader@company.com',
-                tempPassword: 'Leader@123',
+                passwordHash: await hash('Leader@123'),
                 role: UserRole.SALE_LEADER,
                 saleTeamId: team1.id,
                 isActive: true,
@@ -113,7 +117,7 @@ async function runSeeds() {
         } else {
             const staff = userRepository.create({
                 email: 'staff@company.com',
-                tempPassword: 'Staff@123',
+                passwordHash: await hash('Staff@123'),
                 role: UserRole.SALE_STAFF,
                 saleTeamId: team1.id,
                 isActive: true,

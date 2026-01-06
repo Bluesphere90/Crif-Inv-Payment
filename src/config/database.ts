@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
+import path from 'path';
 import { User } from '../entities/User';
 import { SaleTeam } from '../entities/SaleTeam';
 import { BankTransaction } from '../entities/BankTransaction';
@@ -20,7 +21,7 @@ export const AppDataSource = new DataSource({
     synchronize: process.env.NODE_ENV === 'development',
     logging: process.env.NODE_ENV === 'development',
     entities: [User, SaleTeam, BankTransaction, Invoice, InvoiceLine, ImportBatch, AuditLog],
-    migrations: ['src/migrations/**/*.ts'],
+    migrations: [path.join(__dirname, '../migrations/*{.ts,.js}')],
     subscribers: [],
 });
 
